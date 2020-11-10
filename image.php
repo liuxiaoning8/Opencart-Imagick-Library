@@ -1,16 +1,20 @@
 <?php
-class Image {
+
+class Image
+{
     private $file;
     private $image;
     private $width;
     private $height;
     private $bits;
     private $mime;
-    public function __construct($file) {
+
+    public function __construct($file)
+    {
         if (is_file($file)) {
             $this->file = $file;
             $this->image = new Imagick($file);
-            $this->width  = $this->image->getImageWidth();
+            $this->width = $this->image->getImageWidth();
             $this->height = $this->image->getImageHeight();
             $this->bits = $this->image->getImageLength();
             $this->mime = $this->image->getFormat();
@@ -18,29 +22,46 @@ class Image {
             exit('Error: Could not load image ' . $file . '!');
         }
     }
-    public function getFile() {
+
+    public function getFile()
+    {
         return $this->file;
     }
-    public function getImage() {
+
+    public function getImage()
+    {
         return $this->image;
     }
-    public function getWidth() {
+
+    public function getWidth()
+    {
         return $this->width;
     }
-    public function getHeight() {
+
+    public function getHeight()
+    {
         return $this->height;
     }
-    public function getBits() {
+
+    public function getBits()
+    {
         return $this->bits;
     }
-    public function getMime() {
+
+    public function getMime()
+    {
         return $this->mime;
     }
-    public function save($file, $quality = 90) {
+
+    public function save($file, $quality = 90)
+    {
         $this->image->setCompressionQuality($quality);
+        $this->image->setImageCompressionQuality($quality);
         $this->image->writeImage($file);
     }
-    public function resize($width = 0, $height = 0, $default = '') {
+
+    public function resize($width = 0, $height = 0, $default = '')
+    {
         if (!$this->width || !$this->height) {
             return;
         }
@@ -48,10 +69,12 @@ class Image {
         $this->width = $width;
         $this->height = $height;
     }
-    public function watermark($watermark, $position = 'bottomright') {
+
+    public function watermark($watermark, $position = 'bottomright')
+    {
         $watermark_pos_x = 0;
         $watermark_pos_y = 0;
-        switch($position) {
+        switch ($position) {
             case 'topleft':
                 $watermark_pos_x = 0;
                 $watermark_pos_y = 0;
@@ -75,29 +98,22 @@ class Image {
 
         $this->image->compositeImage($watermark, imagick::COMPOSITE_OVER, $watermark_pos_x, $watermark_pos_y);
     }
-    public function crop($top_x, $top_y, $bottom_x, $bottom_y) {
+
+    public function crop($top_x, $top_y, $bottom_x, $bottom_y)
+    {
         $this->width = $bottom_x - $top_x;
         $this->height = $bottom_y - $top_y;
         $this->image->cropImage($top_x, $top_y, $bottom_x, $bottom_y);
     }
-    public function rotate($degree, $color = '#FFFFFF') {
+
+    public function rotate($degree, $color = '#FFFFFF')
+    {
         $rgb = $this->html2rgb($color);
         $this->image->rotateImage(new ImagickPixel($rgb), $degree);
     }
-    private function filter($filter) {
-        imagefilter($this->image, $filter);
-    }
-    private function text($text, $x = 0, $y = 0, $size = 5, $color = '000000') {
-        $draw = new ImagickDraw();
-        $draw->setFontSize($size);
-        $draw->setFillColor(new ImagickPixel($this->html2rgb($color)));
-        $this->image->annotateImage($draw, $x, $y, 0, $text);
-    }
-    private function merge($merge, $x = 0, $y = 0, $opacity = 100) {
-        $merge->getImage->setImageOpacity($opacity / 100);
-        $this->image->compositeImage($merge, imagick::COMPOSITE_ADD, $x, $y);
-    }
-    private function html2rgb($color) {
+
+    private function html2rgb($color)
+    {
         if ($color[0] == '#') {
             $color = substr($color, 1);
         }
@@ -113,6 +129,27 @@ class Image {
         $b = hexdec($b);
         return array($r, $g, $b);
     }
-    function __destruct() {
+
+    function __destruct()
+    {
+    }
+
+    private function filter($filter)
+    {
+        imagefilter($this->image, $filter);
+    }
+
+    private function text($text, $x = 0, $y = 0, $size = 5, $color = '000000')
+    {
+        $draw = new ImagickDraw();
+        $draw->setFontSize($size);
+        $draw->setFillColor(new ImagickPixel($this->html2rgb($color)));
+        $this->image->annotateImage($draw, $x, $y, 0, $text);
+    }
+
+    private function merge($merge, $x = 0, $y = 0, $opacity = 100)
+    {
+        $merge->getImage->setImageOpacity($opacity / 100);
+        $this->image->compositeImage($merge, imagick::COMPOSITE_ADD, $x, $y);
     }
 }
