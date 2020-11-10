@@ -56,6 +56,7 @@ class Image
     public function save($file, $quality = 90)
     {
         $this->image->setCompressionQuality($quality);
+        $this->image->setImageCompressionQuality($quality);
         $this->image->writeImage($file);
     }
 
