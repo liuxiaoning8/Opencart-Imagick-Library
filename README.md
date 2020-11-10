@@ -1,4 +1,4 @@
-A drop in replacement image library for opencart 2.0.* using Imagick PHP extension
+A drop in replacement image library for opencart 2.0.* and 3.0.* using Imagick PHP extension
 
 REQUIREMENTS
 
